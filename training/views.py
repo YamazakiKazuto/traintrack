@@ -20,7 +20,7 @@ class CreatemaeView(ListView):
     model = MenuItem
     template_name = 'create_mae.html'
     context_object_name = 'items'
-    paginate_by = 7
+    # paginate_by = 7
 
     def get_queryset(self):
         # ログインユーザーのメニューだけを表示
@@ -124,7 +124,7 @@ class RecordHistoryView(ListView):
     template_name = 'record_list.html'
     context_object_name = 'items'
     queryset = Record.objects.order_by('posted_at')
-    paginate_by = 7
+    # paginate_by = 7
 
 
     def get_queryset(self):

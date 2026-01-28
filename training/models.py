@@ -21,8 +21,8 @@ class MenuItem(models.Model):
     user = models.ForeignKey(CustomUser, verbose_name='ユーザ', on_delete=models.CASCADE,)
     parts = models.CharField(verbose_name='部位', max_length=20,)
     content = models.CharField(verbose_name='種目', max_length=100,)
-    weight = models.CharField(verbose_name='重量', max_length=10,)
-    rep = models.CharField(verbose_name='回数', max_length=10,)
+    weight = models.IntegerField(verbose_name='重量',)
+    rep = models.IntegerField(verbose_name='回数', )
     memo = models.TextField(verbose_name='メモ',null=True,)
            # 投稿日時のフィールド
     posted_at = models.DateField(verbose_name='投稿日時',auto_now_add=True,)
