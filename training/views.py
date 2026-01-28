@@ -25,6 +25,7 @@ class CreatemaeView(ListView):
     def get_queryset(self):
         # ログインユーザーのメニューだけを表示
         return MenuItem.objects.filter(user=self.request.user).order_by('parts','-posted_at')
+    
 
     def post(self, request):
         item_id = request.POST.get("item_id")

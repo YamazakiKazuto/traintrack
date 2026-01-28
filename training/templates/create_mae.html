@@ -19,11 +19,11 @@
               種目: {{ item.content }}
         
               重量:
-              <input type="number" name="weight" value="{{ item.weight }}" style="width:70px;">
-        
-              回数:
-              <input type="number" name="rep" value="{{ item.rep }}" style="width:70px;">
-        
+              <input type="number" name="weight" value="{{ item.weight }}" style="width:70px;" required>        
+              
+               回数:
+              <input type="number" name="rep" value="{{ item.rep }}" style="width:70px;"required>
+                
               メモ:
               <input type="text" name="memo" value="{{ item.memo }}" style="width:150px;">
             </div>
