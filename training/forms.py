@@ -1,3 +1,5 @@
+#プレースホルダーの設定
+#https://docs.djangoproject.com/ja/5.2/ref/forms/widgets/
 from django.forms import ModelForm
 #from .models import MenuPost
 from django import forms
@@ -17,12 +19,8 @@ class MenuItemForm(ModelForm):
 class HistoryForm(ModelForm):
     class Meta:
         model = Record 
-        fields = ['day','parts', 'content','weight','rep','memo']
-        widgets = {
-            'day': forms.TextInput(attrs={
-                'placeholder': 'xxxx/xx/xx/',
-            }),
-        }
+        fields = []
+
 
 #どうやって
 # MenuPost に紐づく MenuItem を最大5件まで登録可能にする

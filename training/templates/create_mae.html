@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+{% block content %}
+{% if items %}
+  {% regroup items by parts as grouped_items %}
+
+  {% for group in grouped_items %}
+    <div class="card mb-3">
+      <div class="card-header">{{ group.grouper }}</div>
+
+      <ul class="list-group list-group-flush">
+        {% for item in group.list %}
+        <li class="list-group-item">
+          <form method="post" style="display:flex; justify-content:space-between; align-items:center;">
+            {% csrf_token %}
+            <input type="hidden" name="item_id" value="{{ item.id }}">
+        
+            <div>
+              種目: {{ item.content }}
+        
+              重量:
+              <input type="number" name="weight" value="{{ item.weight }}" style="width:70px;">
+        
+              回数:
+              <input type="number" name="rep" value="{{ item.rep }}" style="width:70px;">
+        
+              メモ:
+              <input type="text" name="memo" value="{{ item.memo }}" style="width:150px;">
+            </div>
+        
+            <button type="submit" class="btn btn-sm btn-primary">記録</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+{% endif %}
+{% endblock %}

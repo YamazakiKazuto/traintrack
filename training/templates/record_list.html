@@ -4,18 +4,18 @@
 <!-- 行ったトレーニング一覧 -->
 <h2>トレーニング記録一覧</h2>
 {% if items %}
-  {% regroup items by day as grouped_items %}
+  {% regroup items by menu_item.posted_at as grouped_items %}
 
   {% for group in grouped_items %}
     <div class="card mb-3">
       <div class="card-header">{{ group.grouper }}</div>
       <ul class="list-group list-group-flush">
         {% for item in group.list %}
-          <li class="list-group-item"><strong>{{ item.parts }}</strong></li>
-          <li class="list-group-item"><strong>{{ item.content }}</strong></li>
-          <li class="list-group-item">重量: {{ item.weight }} kg</li>
-          <li class="list-group-item">回数: {{ item.rep }}</li>
-          <li class="list-group-item">メモ: {{ item.memo }}</li>
+          <li class="list-group-item"><p><strong>{{ item.menu_item.parts }} :  
+                                              {{ item.menu_item.content }}</strong></p>
+                                      重量: {{ item.weight }} kg
+                                      回数: {{ item.rep }}
+                                      メモ: {{ item.memo }}</li>
         {% endfor %}
       </ul>
     </div>

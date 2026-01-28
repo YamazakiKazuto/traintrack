@@ -11,13 +11,16 @@ urlpatterns = [
     
     
     path('mypage', views.IndexView.as_view(), name='index'),
+
+    path('post_menu', views.CreateMenuView.as_view(), name='post_menu'),
     
      path('record_list/<int:user>/', views.RecordListView.as_view(), name='record_list'),
 
      path('record_history/<int:user>/',views.RecordHistoryView.as_view(), name='record_history'),
 
 
-     path('menu/create/',views.CreateMenuView.as_view(), name='create_menu'),
+     path('record/create1/',views.CreatemaeView.as_view(), name='create_mae'),
+     path('record/create2/<int:pk>/',views.CreateatoView.as_view(), name='create_ato'),
 
      #筋トレメニューで追加を押したときにメニューを出す
      
@@ -25,9 +28,9 @@ urlpatterns = [
 
 
     # 筋トレ記録ページへのアクセスはviewsモジュールのCreateMenuViewを実行
-    path('post/',
-         views.CreatetrainingView.as_view(),
-         name='post'),    
+    #path('post/',
+     #    views.CreatetrainingView.as_view(),
+      #   name='post'),    
 
     # 投稿完了ページへのアクセスはviewsモジュールのPostSuccessViewを実行
     path('post_done/',
@@ -38,10 +41,6 @@ urlpatterns = [
     # 詳細ページ
     # photo-detail/<Photo postsテーブルのid値>にマッチング
     # <int:pk>は辞書{pk: id値(int)}としてDetailViewに渡される
-    path('menu-detail/<int:pk>',
-         views.DetailView.as_view(),
-         name = 'menu_detail'
-         ),
 
 
 ]

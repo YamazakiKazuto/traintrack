@@ -2,7 +2,7 @@
 {% block title %}記録追加{% endblock %}
 {% block content %}
 <!-- 今日行ったメニューを過去に登録したものから選択 -->
-<h2>今日のトレーニングを記録</h2>
+<h2>メニューの記録</h2>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

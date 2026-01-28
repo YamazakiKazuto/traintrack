@@ -1,15 +1,51 @@
 from django.contrib.auth.decorators import login_required
+from .models import MenuItem, Record
 
 from django.views.generic import TemplateView, ListView
-from .models import MenuItem#,MenuPost
+
 from .forms import *
-from django.views.generic import CreateView
-from django.views.generic import DetailView
+from django.views.generic import CreateView,ListView
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.db.models.functions import TruncDate
 from django.db.models import Count
-from .models import Record
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, get_object_or_404
+from django.utils.decorators import method_decorator
+
+
+
+@method_decorator(login_required, name='dispatch')
+class CreatemaeView(ListView):
+    model = MenuItem
+    template_name = 'create_mae.html'
+    context_object_name = 'items'
+    paginate_by = 7
+
+    def get_queryset(self):
+        # ログインユーザーのメニューだけを表示
+        return MenuItem.objects.filter(user=self.request.user).order_by('parts','-posted_at')
+
+    def post(self, request):
+        item_id = request.POST.get("item_id")
+        item = get_object_or_404(MenuItem, id=item_id, user=request.user)
+
+        # ユーザーが入力した値を取得
+        weight = request.POST.get("weight")
+        rep = request.POST.get("rep")
+        memo = request.POST.get("memo")
+
+    # Record に保存（MenuItem は更新しない）
+        Record.objects.create(
+            user=request.user,
+            menu_item=item,
+            weight=weight,
+            rep=rep,
+            memo=memo
+        )
+
+        # 保存後の遷移先：urls.py にある post_done に飛ばす
+        return redirect('training:post_done')
 
 # Create your views here.
 
@@ -26,16 +62,7 @@ class IndexView(TemplateView):
 #いまこのクラス使ってない
 @method_decorator(login_required, name='dispatch')
 class CreateMenuView(CreateView):
-    '''メニュー投稿ページのビュー
-    
-    MenuPostFormで定義されているモデルとフィールドと連携して
-    投稿データをデータベースに登録する
-    
-    Attributes:
-      form_class: モデルとフィールドが登録されたフォームクラス
-      template_name: レンダリングするテンプレート
-      success_url: データベスへの登録完了後のリダイレクト先
-    '''
+    '''筋トレ記録のビュー'''
     # forms.pyのPhotoPostFormをフォームクラスとして登録
     form_class = MenuItemForm
     #def renda(self):    
@@ -80,19 +107,7 @@ class CreatetrainingView(CreateView):
     success_url = reverse_lazy('training:post_done')
 
     def form_valid(self, form):
-        '''CreateViewクラスのform_valid()をオーバーライド
-        
-        フォームのバリデーションを通過したときに呼ばれる
-        フォームデータの登録をここで行う
-        
-        parameters:
-          form(django.forms.Form):
-            form_classに格納されているPhotoPostFormオブジェクト
-        Return:
-          HttpResponseRedirectオブジェクト:
-            スーパークラスのform_valid()の戻り値を返すことで、
-            success_urlで設定されているURLにリダイレクトさせる
-        '''
+
         # commit=FalseにしてPOSTされたデータを取得
         postdata = form.save(commit=False)
         # 投稿ユーザーのidを取得してモデルのuserフィールドに格納
@@ -108,28 +123,29 @@ class RecordHistoryView(ListView):
     model = Record
     template_name = 'record_list.html'
     context_object_name = 'items'
-    queryset = Record.objects.order_by('-posted_at')
+    queryset = Record.objects.order_by('posted_at')
     paginate_by = 7
 
 
     def get_queryset(self):
-      '''クエリを実行する
-      
-      self.kwargsの取得が必要なため、クラス変数querysetではなく、
-      get_queryset（）のオーバーライドによりクエリを実行する
-      
-      Returns:
-        クエリによって取得されたレコード
-      '''
+
       # self.kwargsでキーワードの辞書を取得し、
       # userキーの値(ユーザーテーブルのid)を取得
       user_id = self.kwargs['user']
       # filter(フィールド名=id)で絞り込む
       user_list = Record.objects.filter(
-        user=user_id).order_by('day')
+        user=user_id).order_by('posted_at')
       # クエリによって取得されたレコードを返す
       return user_list
-    
+        
+
+class CreateatoView(CreateView):
+            #筋トレ記録を作
+    form_class = HistoryForm
+    # レンダリングするテンプレート
+    template_name = "create_ato.html"
+    # フォームデータ登録完了後のリダイレクト先
+    success_url = reverse_lazy('training:post_done')
 
 
 class RecordListView(ListView):
@@ -140,23 +156,7 @@ class RecordListView(ListView):
     queryset = MenuItem.objects.order_by('-posted_at')
     paginate_by = 7
     
-    def get_queryset(self):
-      '''クエリを実行する
-      
-      self.kwargsの取得が必要なため、クラス変数querysetではなく、
-      get_queryset（）のオーバーライドによりクエリを実行する
-      
-      Returns:
-        クエリによって取得されたレコード
-      '''
-      # self.kwargsでキーワードの辞書を取得し、
-      # userキーの値(ユーザーテーブルのid)を取得
-      user_id = self.kwargs['user']
-      # filter(フィールド名=id)で絞り込む
-      user_list = MenuItem.objects.filter(
-        user=user_id).order_by('parts')
-      # クエリによって取得されたレコードを返す
-      return user_list
+
 
 # デコレーターにより、CreatePhotoViewへのアクセスはログインユーザーに限定される
 # ログイン状態でなければsettings.pyのLOGIN_URLにリダイレクトされる
